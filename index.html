@@ -108,7 +108,10 @@
     padding-block:22px;
     flex-wrap:wrap;
   }
-  .brand{ display:flex; align-items:baseline; gap:10px; }
+  .brand{ display:flex; align-items:center; gap:12px; }
+  .brand-logo{ display:block; height:44px; width:auto; flex:none; }
+  .brand-logo img{ display:block; height:100%; width:auto; }
+  .brand-text{ display:flex; align-items:baseline; gap:10px; flex-wrap:wrap; }
   .brand-mark{
     font-family:"Big Shoulders Display", sans-serif;
     font-weight:900;
@@ -358,8 +361,11 @@
 
 <header class="site">
   <div class="brand">
+    <a class="brand-logo" href="#" aria-label="HLSCE - Trang chủ"><img src="logo-hlsce.png" alt="Logo HLSCE" width="58" height="44"></a>
+    <span class="brand-text">
     <span class="brand-mark">NHỊP<span class="beat">·</span>CẦU</span>
     <span class="brand-tag">/ học viện thiết kế kết cấu cầu</span>
+    </span>
   </div>
   <nav class="site-nav">
     <a href="#curriculum">Chương trình học</a>
