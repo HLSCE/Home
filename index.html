@@ -101,15 +101,25 @@
 
   /* ---------- Header ---------- */
   header.site{
-    max-width:1080px;
-    margin-inline:auto;
     display:flex;
     align-items:center;
     justify-content:space-between;
     gap:16px;
-    padding-block:22px;
     flex-wrap:wrap;
+    padding-block:22px;
+    /* cố định khi cuộn trang */
+    position:sticky;
+    top:0;
+    z-index:100;
+    /* nền tràn toàn chiều rộng (bù padding 20px của body), nội dung vẫn canh giữa 1080px */
+    margin-inline:-20px;
+    padding-inline:max(20px, calc((100% - 1080px) / 2));
+    background:var(--surface);
+    border-bottom:1px solid var(--line);
+    transition:box-shadow .2s ease;
   }
+  header.site.is-scrolled{ box-shadow:0 2px 12px rgba(0,0,0,.08); }
+  html{ scroll-padding-top:96px; }
   .brand{ display:flex; align-items:center; gap:12px; }
   .brand-logo{ display:block; height:44px; width:auto; flex:none; }
   .brand-logo img{ display:block; height:100%; width:auto; }
@@ -660,5 +670,14 @@
   <p class="disclaimer">© Nhịp Cầu — không gian chia sẻ kiến thức thiết kế kết cấu cầu. Nội dung tham khảo, cần đối chiếu với văn bản tiêu chuẩn hiệu lực và ý kiến chuyên gia trước khi áp dụng vào công trình thực tế.</p>
   <p class="fmark mono">TCVN · EUROCODE · AASHTO</p>
 </footer>
+<script>
+(function () {
+  var h = document.querySelector('header.site');
+  if (!h) return;
+  function onScroll() { h.classList.toggle('is-scrolled', window.scrollY > 4); }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
 </body>
 </html>
