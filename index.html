@@ -157,6 +157,34 @@
   }
   nav.site-nav a:hover{ color:var(--blue); border-color:var(--blue); }
 
+  /* ---------- Mega menu (Tools) ---------- */
+  nav.site-nav a.has-menu[aria-expanded="true"]{ color:var(--blue); border-color:var(--blue); }
+  .mega{
+    position:absolute; top:calc(100% + 1px); left:var(--mega-x, 20px);
+    width:340px; max-width:calc(100vw - 40px);
+    padding:18px 20px 20px;
+    background:var(--surface);
+    border:1px solid var(--line); border-top:0;
+    border-radius:0 0 10px 10px;
+    box-shadow:0 14px 28px rgba(23,34,42,.10);
+    opacity:0; visibility:hidden; transform:translateY(-6px);
+    transition:opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+  }
+  header.site.menu-open .mega{ opacity:1; visibility:visible; transform:none; transition-delay:0s; }
+  .mega-title{
+    font-family:"Montserrat", sans-serif; font-size:.78rem; font-weight:600;
+    letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+    padding-bottom:10px; margin-bottom:12px; border-bottom:1px solid var(--line);
+  }
+  .mega-item{ display:flex; align-items:center; gap:14px; padding:10px; margin-inline:-10px; border-radius:8px; text-decoration:none; color:inherit; }
+  .mega-item:hover, .mega-item:focus-visible{ background:var(--surface-2); }
+  .mega-ico{ flex:none; width:42px; height:42px; border-radius:8px; background:var(--blue-soft); color:var(--blue); display:grid; place-items:center; }
+  .mega-ico svg{ width:22px; height:22px; }
+  .mega-name{ display:block; font-family:"Montserrat", sans-serif; font-weight:600; font-size:.95rem; line-height:1.3; color:var(--ink); }
+  .mega-desc{ display:block; font-family:"Montserrat", sans-serif; font-size:.8rem; line-height:1.4; color:var(--muted); margin-top:2px; }
+  .mega-item:hover .mega-name{ color:var(--blue); }
+  @media (prefers-reduced-motion: reduce){ .mega{ transition:none; } }
+
   /* ---------- Hero ---------- */
   .hero{
     background:
@@ -392,10 +420,21 @@
   </div>
   <nav class="site-nav">
     <a href="#curriculum">Training</a>
-    <a href="#tools">Tools</a>
+    <a href="#tools" class="has-menu" aria-haspopup="true" aria-expanded="false" aria-controls="menu-tools">Tools</a>
     <a href="#books">Books</a>
     <a href="#blog">Blog</a>
   </nav>
+  <div class="mega" id="menu-tools">
+    <div class="mega-title">Software</div>
+    <a class="mega-item" href="#midas-civil">
+      <span class="mega-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 18h18M6 18v-5M18 18v-5M4 13c3-7 13-7 16 0"/></svg></span>
+      <span><span class="mega-name">Midas Civil</span><span class="mega-desc">Phân tích &amp; thiết kế kết cấu cầu</span></span>
+    </a>
+    <a class="mega-item" href="#adsec-oasys">
+      <span class="mega-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><circle cx="9" cy="9" r="1.3"/><circle cx="15" cy="9" r="1.3"/><circle cx="9" cy="15" r="1.3"/><circle cx="15" cy="15" r="1.3"/></svg></span>
+      <span><span class="mega-name">Adsec Oasys</span><span class="mega-desc">Phân tích mặt cắt bê tông cốt thép</span></span>
+    </a>
+  </div>
 </header>
 
 <div class="wrap">
@@ -677,6 +716,33 @@
   function onScroll() { h.classList.toggle('is-scrolled', window.scrollY > 4); }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  // Menu con của TOOLS
+  var tools = h.querySelector('a.has-menu');
+  var menu = document.getElementById('menu-tools');
+  if (!tools || !menu) return;
+  var timer;
+  function place() {
+    var hr = h.getBoundingClientRect(), lr = tools.getBoundingClientRect();
+    var x = Math.max(20, Math.min(lr.left - hr.left - 20, hr.width - menu.offsetWidth - 20));
+    menu.style.setProperty('--mega-x', x + 'px');
+  }
+  function open() { clearTimeout(timer); place(); h.classList.add('menu-open'); tools.setAttribute('aria-expanded', 'true'); }
+  function closeNow() { clearTimeout(timer); h.classList.remove('menu-open'); tools.setAttribute('aria-expanded', 'false'); }
+  function close() { clearTimeout(timer); timer = setTimeout(closeNow, 200); }
+  [tools, menu].forEach(function (el) {
+    el.addEventListener('mouseenter', open);
+    el.addEventListener('mouseleave', close);
+  });
+  tools.addEventListener('focus', open);
+  h.addEventListener('focusout', function (e) { if (!h.contains(e.relatedTarget)) closeNow(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNow(); });
+  // Màn hình cảm ứng: chạm lần 1 mở menu, lần 2 mới đi theo liên kết
+  tools.addEventListener('click', function (e) {
+    if (window.matchMedia('(hover: none)').matches && !h.classList.contains('menu-open')) { e.preventDefault(); open(); }
+  });
+  document.addEventListener('click', function (e) { if (!h.contains(e.target)) closeNow(); });
+  window.addEventListener('resize', function () { if (h.classList.contains('menu-open')) place(); });
 })();
 </script>
 </body>
